@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Dashboard</title>
+    <meta http-equiv="refresh" content="3">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #2c3e50; color: white; padding: 30px; }
+        table { width: 100%; border-collapse: collapse; background: white; color: black; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #34495e; color: white; }
+        .btn-accept { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-reject { background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-complete { background-color: #17a2b8; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        select { padding: 8px; border-radius: 4px; }
+        .active-ride-box { background-color: #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white; border: 2px solid #e67e22; }
+    </style>
+</head>
+<body>
+    <div class="header-controls">
+        <h2>🚦 Driver Dashboard</h2>
+        <form method="GET" action="/driver">
+            <label><strong>Viewing as:</strong></label>
+            <select name="driver_id" onchange="this.form.submit()">
+                {% for d in drivers %}
+                    <option value="{{ d.driver_id }}" {% if d.driver_id == current_driver_id %}selected{% endif %}>
+                        {{ d.name }} ({{ d.availability_status }})
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if active_ride %}
+    <div class="active-ride-box">
+        <h3 style="margin-top: 0;">🚕 Current Active Ride</h3>
+        <p><strong>Passenger:</strong> {{ active_ride.user_name }} | <strong>Route:</strong> {{ active_ride.pickup }} ➔ {{ active_ride.dropoff }} | <strong>Fare:</strong> ₹{{ active_ride.fare }}</p>
+        <form method="POST" style="margin-top: 15px;">
+            <input type="hidden" name="ride_id" value="{{ active_ride.ride_id }}">
+            <button type="submit" name="action" value="complete" class="btn-complete">✓ Mark Ride as Completed</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <h3>Available Requests</h3>
+    <table>
+        <tr>
+            <th>Passenger</th>
+            <th>Pickup</th>
+            <th>Drop-off</th>
+            <th>Fare</th>
+            <th>Actions</th>
+        </tr>
+        {% for ride in rides %}
+        <tr>
+            <td>{{ ride.user_name }}</td>
+            <td>{{ ride.pickup }}</td>
+            <td>{{ ride.dropoff }}</td>
+            <td>₹{{ ride.fare }}</td>
+            <td>
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="ride_id" value="{{ ride.ride_id }}">
+                    <button type="submit" name="action" value="accept" class="btn-accept">Accept</button>
+                    <button type="submit" name="action" value="reject" class="btn-reject">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="text-align: center;">No new ride requests.</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ride Status</title>
+    {% if ride.status == 'Pending' or ride.status == 'Accepted' %}
+        <meta http-equiv="refresh" content="3"> 
+    {% endif %}
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .status-badge { padding: 10px; border-radius: 20px; font-weight: bold; color: white; display: inline-block; margin-top: 10px; }
+        .Pending { background-color: #ffc107; color: black; }
+        .Accepted { background-color: #28a745; }
+        .Rejected { background-color: #dc3545; }
+        .Completed { background-color: #17a2b8; color: white; } /* NEW COLOR */
+        .btn-retry { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Live Ride Status</h2>
+        <p><strong>Passenger:</strong> {{ ride.user_name }}</p>
+        <p><strong>Distance:</strong> {{ ride.distance }} km</p>
+        <p><strong>Total Fare:</strong> ₹{{ ride.fare }}</p>
+        
+        <div class="status-badge {{ ride.status }}">
+            Status: {{ ride.status }}
+        </div>
+
+        {% if ride.status == 'Accepted' %}
+            <hr>
+            <h3>Driver Assigned!</h3>
+            <p><strong>Name:</strong> {{ ride.driver_name }}</p>
+            <p><strong>Car:</strong> {{ ride.model }} ({{ ride.plate_number }})</p>
+        {% elif ride.status == 'Rejected' %}
+            <hr>
+            <p style="color: #dc3545;">Sorry, no drivers are available for this route right now.</p>
+            <a href="/" class="btn-retry">Book Another Ride</a>
+        
+        {% elif ride.status == 'Completed' %}
+            <hr>
+            <h3 style="color: #17a2b8;">Arrived at Destination!</h3>
+            <p>Thank you for riding with us.</p>
+            <a href="/" class="btn-retry" style="background-color: #17a2b8;">Book Another Ride</a>
+        {% endif %}
+    </div>
+</body>
+</html>

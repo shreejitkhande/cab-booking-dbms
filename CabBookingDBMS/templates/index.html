@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book a Cab</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;}
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🚕 Book Your Ride</h2>
+        <form method="POST">
+            <label>Your Name:</label>
+            <input type="text" name="name" required placeholder="Enter your name">
+
+            <label>Pickup Location:</label>
+            <select name="pickup">
+                {% for loc in locations %}
+                    <option value="{{ loc.location_id }}">{{ loc.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Drop-off Location:</label>
+            <select name="dropoff">
+                {% for loc in locations %}
+                    <option value="{{ loc.location_id }}">{{ loc.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Calculate Fare & Request Ride</button>
+        </form>
+    </div>
+</body>
+</html>
